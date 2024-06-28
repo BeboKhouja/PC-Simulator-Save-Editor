@@ -1,0 +1,26 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=PCSimulatorSaveEditor.chm
+Contents file=PCSimSaveEditToC.hhc
+Default topic=Taking a look at the program.htm
+Display compile progress=No
+Index file=PCSimSaveEditorIndex.hhk
+Language=0x409 English (United States)
+
+
+[FILES]
+Taking a look at the program.htm
+PC Simulator Save Files.htm
+PC Simulator Websites.htm
+Terminologies.htm
+About.htm
+SilkRoad.jpg
+FlashDriveNegativeBenchmark.jpg
+FreeCoins.jpg
+Giveaway.jpg
+GiveawayThankYou.jpg
+GiveawayAlreadyClaimed.jpg
+Program.jpg
+
+[INFOTYPES]
+
