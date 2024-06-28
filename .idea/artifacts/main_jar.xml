@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="main:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PC_Simulator_Save_Editor_jar/single</output-path>
+    <root id="archive" name="PC Simulator Save Editor.jar">
+      <element id="module-output" name="PC Simulator Save Editor" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/ChmWeb-0.5.4.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
