@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PC Simulator Save Editor:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PC_Simulator_Save_Editor_jar</output-path>
+    <root id="archive" name="PC Simulator Save Editor.jar">
+      <element id="module-output" name="PC Simulator Save Editor" />
+    </root>
+  </artifact>
+</component>
