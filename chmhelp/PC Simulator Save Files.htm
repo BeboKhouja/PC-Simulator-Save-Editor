@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
-<HTML>
+<HTML lang="en">
 <HEAD>
-<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<meta name="GENERATOR" content="Microsoft&reg HTML Help Workshop 4.1">
 <Title>PC Simulator Save Files</Title>
 </HEAD>
 <BODY>
@@ -14,7 +14,8 @@ In this tutorial, we'll refer PC Simulator Save files as just saves.<br><br>
 <h2>First line of a save</h2><br>
 The first line of a save contains metadata about the save.<br><br>
 <code>
-{"version":"1.8.0","roomName":"1.8.0","coin":180,"room":3,"gravity":true,"hardcore":false,"playtime":5525.873046875,"temperature":20.0,"ac":false,"light":true,"sign":"Yiming"}
+{"version":"1.8.0","roomName":"1.8.0","coin":180,"room":3,"gravity":true,"hardcore":false,"playtime":5525.873046875,"temperature":20.0,"ac":false,"light":true,"sign":"Yiming"}
+
 </code><br>
 <b>This is how the first line of the 1.8.0 example look's like.</b><br><br>
 The <code>version</code> property describes the version the save has been played as of the latest load. This property cannot be changed after the save has been created without loading the save in a newer version.<br>
@@ -34,7 +35,7 @@ The <code>ac</code> property is if the AC in the save is on (<code>true</code>) 
 The <code>light</code> property is just if the lamp is on through the switch near the door. Don't get confused again! <br>
 The <code>sign</code> property is the name of the creator that can be seen in the save info. Not displayed if the property value is blank. This property can only be changed through save editors or hacks, and cannot be changed in game, and you cannot save the game if this property's value is not blank if you are done with it (just Exit without Save).<br><br>
 <h2>Second line of a save</h2><br>
-It's getting more complicated now, so try to stay with me if your interested.<br><br>
+It's getting more complicated now, so try to stay with me if you're interested.<br><br>
 
 <b>This is how the player's property look's like:</b> <br>
 <code>{"playerData":{"x":-4.90798426,"y":-2.70895219,"z":-10.656539,"ry":192.328568,"rx":19.5388222}</code> <br>
@@ -45,7 +46,7 @@ Now, global applies to all, and specifics applies to a specific <code>spawnId</c
 
 <b>This is how an object's global property look's like:</b><br>
 <code>"itemData":[{"spawnId":"BannerStand","id":28630066,"pos":{"x":-24.26478,"y":-2.19383526,"z":4.321465},"rot":{"x":-1.38645992E-05,"y":0.8149904,"z":9.117648E-06,"w":0.579474568},"data":{}}</code><br>
-Notice the <code>itemData</code>, that's where all of the object's are stored.<br>
+Notice the <code>itemData</code>, that's where all the objects are stored.<br>
 The <code>spawnId</code> property is the type of the object (SSDs, Banners in this case). This property cannot be changed after the object has been created without the use of save editors or hacks. This can also be used to spawn illegal items like: <br><br>
 <pre>
 Projector
@@ -58,23 +59,23 @@ The <code>pos</code> property relates to the position of the object in 3D (X, Y,
 The <code>rot</code> property relates to the rotation of the object in 3D (4D?). What is the W property? West? Weight?<br>
 The <code>data</code> property is specific to each <code>spawnId</code>, containing it's data. <br><br>
 
-<b>This is how an SSD's and HDD's data look's like:</b><br>
+<b>This is how an SSDs and HDDs data look's like:</b><br>
 <code>{"storageName":"Local Disk","password":"","files":[{"path":"System/boot.bin","content":"pcos","hidden":true,"size":60000,"StorageSize":60000},{"path":"App Downloader.exe","content":"","hidden":false,"size":432,"StorageSize":432},{"path":"Personalization.exe","content":"","hidden":false,"size":374,"StorageSize":374},{"path":"System/user","content":"{\"userPicturePath\":\"\",\"userName\":\"Video PC\",\"background\":0}","hidden":true,"size":0,"StorageSize":59},{"path":"System/devices","content":"{\"devices\":[{\"name\":\"LED Display 1225\",\"type\":2,\"id\":-666251422}]}","hidden":true,"size":0,"StorageSize":66},{"path":"f0.pic","content":"","hidden":false,"size":0,"StorageSize":596},],"hooked":true,"glue":false}}</code><br><br>
 
 This would be way too long to explain if everything was included.<br><br>
 The <code>storageName</code> property is the text that appears in Disk Management and if you hold the drive. <br>
-The <code>password</code> property is if you set a password in Personalization. Without the password, you wont be able to boot your computer. This property cannot be changed if you forgot the password without save editors or hacks.<br>
+The <code>password</code> property is if you set a password in Personalization. Without the password, you won't be able to boot your computer. This property cannot be changed if you forgot the password without save editors or hacks.<br>
 The <code>files</code> property is the contents of the drive. We'll get into that in the next section.<br>
-The <code>hooked</code> property is if its in a PC?<br>
+The <code>hooked</code> property is if it's in a PC?<br>
 The <code>glue</code> property is probably for the glue item which we'll get to in the next page.<br><br>
 
 <b>This is how a file look's like:</b><br>
 <code>{"path":"System/boot.bin","content":"pcos","hidden":true,"size":60000,"StorageSize":60000}</code><br>
 The <code>path</code> property is just the name of the file/directory. But there's more.<br><br>
 
-The file <code>System/boot.bin</code> is required to boot PCOS. If missing, PCOS wont boot.<br>
+The file <code>System/boot.bin</code> is required to boot PCOS. If missing, PCOS won't boot.<br>
 The file <code>System/boot.bin</code> cannot be copied, deleted, or cut without the use of save editors or hacks.<br>
-The file <code>System/boot.bin</code> is hidden by default, but still wont appear in the desktop. <br>
+The file <code>System/boot.bin</code> is hidden by default, but still won't appear in the desktop. <br>
 The <code>content</code> property is the contents of the file.<br>
 The <code>System/boot.bin</code> contents has to be either pcos (PCOS) or pcos_ins (PCOS Installer).<br>
 Apps have to be either the apps that are in the list of the App Downloader app, and ends with .exe <br><br>
@@ -111,7 +112,7 @@ Windows 9x: <code>3</code><br><br>
 
 <b>This is how the <code>System/Devices</code> file look's like:</b><br>
 <code>{\"devices\":[{\"name\":\"LED Display 1225\",\"type\":2,\"id\":-666251422}]}</code><br>
-<code>devices</code> is where the devices are stored, so we wont get into that.<br>
+<code>devices</code> is where the devices are stored, so we won't get into that.<br>
 In each device:<br>
 The <code>name</code> property is the name of the device. This can be changed in My Devices.<br>
 The <code>type</code> property is the type of the device in integer.<br>

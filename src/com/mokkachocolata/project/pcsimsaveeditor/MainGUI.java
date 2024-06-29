@@ -32,7 +32,7 @@ public class MainGUI {
     private JButton guideButton;
 
     private String getEncryptedDecryptedString(String decryptEncrypt) throws InterruptedException {
-        PeformOperation crypt = new PeformOperation();
+        PerformOperation crypt = new PerformOperation();
         Thread secondThread = new Thread(crypt);
         crypt.setDecryptEncrypt(decryptEncrypt);
         secondThread.start();
@@ -183,7 +183,7 @@ public class MainGUI {
     }
 }
 
-class PeformOperation implements Runnable {
+class PerformOperation implements Runnable {
     public String getText() {
         return text;
     }
