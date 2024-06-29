@@ -31,5 +31,18 @@
 		<param name="Name" value="PC Simulator websites">
 		<param name="Local" value="PC Simulator Websites.htm">
 		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="PC Simulator Source Code">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Introduction">
+			<param name="Local" value="Source\PC Simulator source code introduction.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Yiming.AntiCheat">
+			<param name="Local" value="Source\Yiming.AntiCheat.htm">
+			</OBJECT>
+	</UL>
 </UL>
 </BODY></HTML>
