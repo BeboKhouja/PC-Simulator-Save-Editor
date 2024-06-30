@@ -21,15 +21,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainGUI {
-    private JButton selectSaveFile;
+    private final JMenuBar menuBar = new JMenuBar();
+    private final JMenu fileMenu = new JMenu("File");
+    private final JMenu helpMenu = new JMenu("Help");
+    private final JMenu optionsMenu = new JMenu("Options");
+    private final JMenuItem open = new JMenuItem("Open");
+    private final JMenuItem save = new JMenuItem("Save");
+    private final JMenuItem help = new JMenuItem("Help");
+    private final JCheckBoxMenuItem encryptWhenSaving = new JCheckBoxMenuItem("Automatically encrypt when saving file");
+    private final JCheckBoxMenuItem decryptWhenOpening = new JCheckBoxMenuItem("Automatically decrypt when opening file");
     private final ChmWeb chmWeb = new ChmWeb();
-    private JButton selectOutputFile;
     private JTextArea Output;
     private JTextArea Input;
     private JButton decryptButton;
     private JPanel panel;
     private JButton copyToClipboardButton;
-    private JButton guideButton;
 
     private String getEncryptedDecryptedString(String decryptEncrypt) throws InterruptedException {
         PerformOperation crypt = new PerformOperation();
@@ -48,7 +54,12 @@ public class MainGUI {
                 throw new RuntimeException(e);
             }
         });
-        selectSaveFile.addActionListener(new ActionListener() {
+        copyToClipboardButton.addActionListener(_ -> {
+            StringSelection stringSelection = new StringSelection(Output.getText());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
+        });
+        open.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String home = System.getProperty("user.home");
@@ -58,10 +69,18 @@ public class MainGUI {
                 if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     selected = fileChooser.getSelectedFile();
                     try {
-                        Output.setText(getEncryptedDecryptedString(Files.readString(selected.toPath())));
+                        Output.setText(decryptWhenChecked(Files.readString(selected.toPath())));
                     } catch (IOException | InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
+                }
+            }
+
+            public String decryptWhenChecked(String arg) throws InterruptedException {
+                if(decryptWhenOpening.isSelected()){
+                    return getEncryptedDecryptedString(arg);
+                } else {
+                    return arg;
                 }
             }
 
@@ -89,7 +108,7 @@ public class MainGUI {
                 return fileChooser;
             }
         });
-        selectOutputFile.addActionListener(new ActionListener() {
+        save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String home = System.getProperty("user.home");
@@ -100,11 +119,19 @@ public class MainGUI {
                     selected = fileChooser.getSelectedFile();
                     try {
                         FileWriter writer = new FileWriter(selected);
-                        writer.write(getEncryptedDecryptedString(Output.getText()));
+                        writer.write(encryptWhenChecked(Output.getText()));
                         writer.close();
                     } catch (IOException | InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
+                }
+            }
+
+            public String encryptWhenChecked(String arg) throws InterruptedException {
+                if(encryptWhenSaving.isSelected()){
+                    return getEncryptedDecryptedString(arg);
+                } else {
+                    return arg;
                 }
             }
 
@@ -132,12 +159,7 @@ public class MainGUI {
                 return fileChooser;
             }
         });
-        copyToClipboardButton.addActionListener(_ -> {
-            StringSelection stringSelection = new StringSelection(Output.getText());
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(stringSelection, null);
-        });
-        guideButton.addActionListener(new ActionListener() {
+        help.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Path chmPath;
@@ -167,19 +189,31 @@ public class MainGUI {
     }
 
     public static void main(String[] args) {
-        new MainGUI().startupInit();
-        JFrame frame = new JFrame("PC Simulator Save Editor");
-        frame.setContentPane(new MainGUI().panel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-    }
-    private void startupInit() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         }catch(Exception ex) {
             System.exit(-1);
         }
+        MainGUI gui = new MainGUI();
+        JFrame frame = new JFrame("PC Simulator Save Editor");
+        frame.setJMenuBar(gui.menuBar);
+        // Menu bar add menus
+        gui.menuBar.add(gui.fileMenu);
+        gui.menuBar.add(gui.optionsMenu);
+        gui.menuBar.add(gui.helpMenu);
+        // Menus add items
+        gui.fileMenu.add(gui.open);
+        gui.fileMenu.add(gui.save);
+        gui.decryptWhenOpening.setSelected(true);
+        gui.encryptWhenSaving.setSelected(true);
+        gui.optionsMenu.add(gui.decryptWhenOpening);
+        gui.optionsMenu.add(gui.encryptWhenSaving);
+        gui.helpMenu.add(gui.help);
+
+        frame.setContentPane(gui.panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
 
