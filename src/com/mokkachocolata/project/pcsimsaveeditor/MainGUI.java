@@ -1,14 +1,14 @@
 package com.mokkachocolata.project.pcsimsaveeditor;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.FileDialog;
 import org.jchmlib.app.ChmWeb;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
+import org.eclipse.swt.widgets.*;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class MainGUI {
     private final JMenuBar menuBar = new JMenuBar();
@@ -33,9 +34,7 @@ public class MainGUI {
     private final ChmWeb chmWeb = new ChmWeb();
     private JTextArea Output;
     private JTextArea Input;
-    private JButton decryptButton;
     private JPanel panel;
-    private JButton copyToClipboardButton;
 
     private String getEncryptedDecryptedString(String decryptEncrypt) throws InterruptedException {
         PerformOperation crypt = new PerformOperation();
@@ -47,32 +46,45 @@ public class MainGUI {
     }
 
     public MainGUI() {
-        decryptButton.addActionListener(_ -> {
-            try {
-                Output.setText(getEncryptedDecryptedString(Input.getText()));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        copyToClipboardButton.addActionListener(_ -> {
-            StringSelection stringSelection = new StringSelection(Output.getText());
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(stringSelection, null);
-        });
         open.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String home = System.getProperty("user.home");
                 File downloads = new File(home+"/Downloads/");
                 File selected;
-                JFileChooser fileChooser = getjFileChooser(downloads);
-                if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                    selected = fileChooser.getSelectedFile();
+                final Display display = new Display();
+                FileDialog dialog = getFileDialog(display, downloads);
+                display.dispose();
+                if (!Objects.equals(dialog.getFileName(), "")) {
+                    selected = new File(dialog.getFilterPath() + getWin32OrLinuxSeperator() + dialog.getFileName());
                     try {
                         Output.setText(decryptWhenChecked(Files.readString(selected.toPath())));
                     } catch (IOException | InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
+                }
+            }
+
+            private static FileDialog getFileDialog(Display display, File downloads) {
+                final Shell shell = new Shell(display);
+                FileDialog dialog = new FileDialog(shell, SWT.OPEN);
+                dialog.setText("Open PC Simulator Save File");
+                String[] filterNames = {"PC Simulator save file", "All Files"};
+                String[] filterExtensions = {"*.pc","*"};
+                dialog.setFilterNames(filterNames);
+                dialog.setFilterExtensions(filterExtensions);
+                dialog.setFilterPath(downloads.getPath());
+                dialog.open();
+                return dialog;
+            }
+
+            private String getWin32OrLinuxSeperator() {
+                String OS;
+                OS = System.getProperty("os.name");
+                if (OS.startsWith("Windows")) {
+                    return "\\";
+                } else {
+                    return "/";
                 }
             }
 
@@ -83,30 +95,6 @@ public class MainGUI {
                     return arg;
                 }
             }
-
-            private static JFileChooser getjFileChooser(File downloads) {
-                JFileChooser fileChooser = new JFileChooser(downloads);
-                FileFilter filter = new FileFilter() {
-                    @Override
-                    public boolean accept(File pathname) {
-                        if (pathname.isDirectory()) {
-                            return true;
-                        } else {
-                            String filename = pathname.getName().toLowerCase();
-                            return filename.endsWith(".pc") ;
-                        }
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return ".pc (PC Simulator save file)";
-                    }
-                };
-                fileChooser.addChoosableFileFilter(filter);
-                fileChooser.setFileFilter(filter);
-                fileChooser.setDialogTitle("Open PC Simulator save file...");
-                return fileChooser;
-            }
         });
         save.addActionListener(new ActionListener() {
             @Override
@@ -114,9 +102,19 @@ public class MainGUI {
                 String home = System.getProperty("user.home");
                 File downloads = new File(home+"/Downloads/");
                 File selected;
-                JFileChooser fileChooser = getjFileChooser(downloads);
-                if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-                    selected = fileChooser.getSelectedFile();
+                final Display display = new Display();
+                final Shell shell = new Shell(display);
+                FileDialog dialog = new FileDialog(shell, SWT.SAVE);
+                dialog.setText("Save to");
+                String[] filterNames = {"PC Simulator save file", "All Files"};
+                String[] filterExtensions = {"*.pc","*"};
+                dialog.setFilterNames(filterNames);
+                dialog.setFilterExtensions(filterExtensions);
+                dialog.setFilterPath(downloads.getPath());
+                dialog.open();
+                display.dispose();
+                if (!Objects.equals(dialog.getFileName(), "")) {
+                    selected = new File(dialog.getFilterPath() + getWin32OrLinuxSeperator() + dialog.getFileName());
                     try {
                         FileWriter writer = new FileWriter(selected);
                         writer.write(encryptWhenChecked(Output.getText()));
@@ -135,28 +133,14 @@ public class MainGUI {
                 }
             }
 
-            private static JFileChooser getjFileChooser(File downloads) {
-                JFileChooser fileChooser = new JFileChooser(downloads);
-                FileFilter filter = new FileFilter() {
-                    @Override
-                    public boolean accept(File pathname) {
-                        if (pathname.isDirectory()) {
-                            return true;
-                        } else {
-                            String filename = pathname.getName().toLowerCase();
-                            return filename.endsWith(".pc") ;
-                        }
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return ".pc (PC Simulator save file)";
-                    }
-                };
-                fileChooser.addChoosableFileFilter(filter);
-                fileChooser.setFileFilter(filter);
-                fileChooser.setDialogTitle("Save to...");
-                return fileChooser;
+            private String getWin32OrLinuxSeperator() {
+                String OS;
+                OS = System.getProperty("os.name");
+                if (OS.startsWith("Windows")) {
+                    return "\\";
+                } else {
+                    return "/";
+                }
             }
         });
         help.addActionListener(new ActionListener() {
@@ -186,6 +170,24 @@ public class MainGUI {
                 }
             }
         });
+        Input.addKeyListener(new KeyAdapter() {
+            private String removeLastChar(String s) {
+                return (s == null || s.isEmpty())
+                        ? null
+                        : (s.substring(0, s.length() - 1));
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                    Input.setText(removeLastChar(Input.getText()));
+                    try {
+                        Output.setText(getEncryptedDecryptedString(Input.getText()));
+                    } catch (InterruptedException ee) {
+                        throw new RuntimeException(ee);
+                    }
+                }
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -201,14 +203,27 @@ public class MainGUI {
         gui.menuBar.add(gui.fileMenu);
         gui.menuBar.add(gui.optionsMenu);
         gui.menuBar.add(gui.helpMenu);
+        gui.fileMenu.setMnemonic(KeyEvent.VK_F);
+        gui.optionsMenu.setMnemonic(KeyEvent.VK_O);
+        gui.helpMenu.setMnemonic(KeyEvent.VK_H);
         // Menus add items
         gui.fileMenu.add(gui.open);
+        gui.open.setMnemonic(KeyEvent.VK_P);
+        gui.open.setToolTipText("Open a PC Simulator save file, and outputs it to the Output textbox.");
         gui.fileMenu.add(gui.save);
+        gui.save.setMnemonic(KeyEvent.VK_S);
+        gui.save.setToolTipText("Saves the current output text to the specified file.");
         gui.decryptWhenOpening.setSelected(true);
+        gui.decryptWhenOpening.setMnemonic(KeyEvent.VK_D);
+        gui.decryptWhenOpening.setToolTipText("When checked, decrypts the file when opening.");
         gui.encryptWhenSaving.setSelected(true);
+        gui.encryptWhenSaving.setMnemonic(KeyEvent.VK_E);
+        gui.encryptWhenSaving.setToolTipText("When checked, encrypts the output text before saving it.");
         gui.optionsMenu.add(gui.decryptWhenOpening);
         gui.optionsMenu.add(gui.encryptWhenSaving);
         gui.helpMenu.add(gui.help);
+        gui.help.setMnemonic(KeyEvent.VK_E);
+        gui.help.setToolTipText("Opens the help document.");
 
         frame.setContentPane(gui.panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -4,6 +4,7 @@
     <root id="archive" name="PC Simulator Save Editor.jar">
       <element id="module-output" name="PC Simulator Save Editor" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/ChmWeb-0.5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/swt.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

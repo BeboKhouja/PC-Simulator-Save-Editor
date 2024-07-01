@@ -9,5 +9,6 @@
     <orderEntry type="jdk" jdkName="22" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="ChmWeb-0.5.4" level="project" />
+    <orderEntry type="library" name="swt" level="project" />
   </component>
 </module>
