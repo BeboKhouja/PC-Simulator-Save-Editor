@@ -1,0 +1,17 @@
+name: Developer Builds
+on:
+  push:
+      branches: master
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+              - name: Cache java
+                uses: satackey/action-docker-layer-caching@v0.0.11
+                continue-on-error: true
+              - name: Java Automatic Release
+                uses: Fulminazzo/java-automatic-release@v2
+                with:
+                    java-version: 22
+          
