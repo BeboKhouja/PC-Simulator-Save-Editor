@@ -218,6 +218,7 @@ public class MainGUI {
         frame.setJMenuBar(gui.menuBar);
         // Menu bar add menus
         frame.setContentPane(gui.panel);
+        gui.panel.setDividerLocation(320);
         gui.menuBar.add(gui.fileMenu);
         gui.menuBar.add(gui.optionsMenu);
         gui.menuBar.add(gui.helpMenu);

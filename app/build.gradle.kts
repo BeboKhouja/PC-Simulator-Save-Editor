@@ -12,8 +12,17 @@ dependencies {
     implementation("com.intellij:forms_rt:7.0.3")
 }
 
-
 application {
     // Define the main class for the application.
     mainClass.set("com.mokkachocolata.pcsimulatorsaveeditor.app.MainGUI")
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "com.mokkachocolata.pcsimulatorsaveeditor.app.MainGUI"
+    }
+    configurations["compileClasspath"].forEach { file: File ->
+        from(zipTree(file.absoluteFile))
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
