@@ -12,6 +12,10 @@
 </OBJECT>
 <UL>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="How to use the app">
+		<param name="Local" value="How to use Android port.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="About">
 		<param name="Local" value="About.htm">
 		</OBJECT>
