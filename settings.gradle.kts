@@ -10,3 +10,4 @@
 rootProject.name = "PC Simulator Save Editor"
 include("app", "list", "utilities")
 include("pcsimulatorsaveeditorlibrary")
+include("AndroidLibrary")
