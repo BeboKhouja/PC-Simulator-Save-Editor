@@ -35,3 +35,4 @@ bin/
 
 # Ignore Gradle build output directory
 build
+/Language Form.txt
