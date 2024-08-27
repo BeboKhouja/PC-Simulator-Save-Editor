@@ -27,8 +27,8 @@ public class MainFunctions implements Runnable {
         }
         int key = 0x81;
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < input.length(); i++) {
-            stringBuilder.append((char) (input.charAt(i) ^ key));
+        for (int i = 0; i < text.length(); i++) {
+            stringBuilder.append((char) (text.charAt(i) ^ key));
         }
         if (callGC) {
             System.gc();
@@ -40,8 +40,8 @@ public class MainFunctions implements Runnable {
         System.gc();
         int key = 0x81;
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < input.length(); i++) {
-            stringBuilder.append((char) (input.charAt(i) ^ key));
+        for (int i = 0; i < text.length(); i++) {
+            stringBuilder.append((char) (text.charAt(i) ^ key));
         }
         System.gc();
         return stringBuilder.toString();
