@@ -49,7 +49,7 @@ public class MainFunctions implements Runnable {
 
     public String fromCharCode(int charCode) {
         return String.valueOf(charCode);
-    ;
+    }
 
     @Override
     public void run() {
