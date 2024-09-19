@@ -10,8 +10,8 @@ Free, and open-source save editor for PC Simulator.
 # Upcoming platform support
 - [X] Java JAR (for platforms supported by OpenJDK.)
 - [X] Android
-- [ ] Native Windows executable (both 32 and 64 bit ARM and x86)
-- [ ] Web (also comes with a website)
+- [X] Universal Windows Platforn (x86, x86-64, ARM64)
+- [X] Web (also comes with a website)
 - [ ] iOS (buy me a Macintosh and ill develop for it)
 - [ ] Native macOS (same thing as above, x86-64 and AArch64 support)
 - [ ] Linux
