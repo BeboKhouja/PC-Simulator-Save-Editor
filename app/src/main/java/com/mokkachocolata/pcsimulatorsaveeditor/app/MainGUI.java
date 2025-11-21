@@ -1,12 +1,12 @@
 package com.mokkachocolata.pcsimulatorsaveeditor.app;
 
+import com.mokkachocolata.library.pcsimsaveeditor.PCSimSave;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.FileDialog;
 import org.jchmlib.app.ChmWeb;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 
 import org.eclipse.swt.widgets.*;
@@ -15,12 +15,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.stream.Stream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 import org.eclipse.swt.browser.Browser;
@@ -36,22 +33,12 @@ public class MainGUI {
     private final JCheckBoxMenuItem encryptWhenSaving = new JCheckBoxMenuItem("Automatically encrypt when saving file");
     private final JCheckBoxMenuItem decryptWhenOpening = new JCheckBoxMenuItem("Automatically decrypt when opening file");
     private final ChmWeb chmWeb = new ChmWeb();
-    private JTextArea Output = new JTextArea();
-    private JTextArea Input = new JTextArea();
+    private final JTextArea Output = new JTextArea();
+    private final JTextArea Input = new JTextArea();
     private final JScrollPane pane0 = new JScrollPane(Input);
     private final JScrollPane pane1 = new JScrollPane(Output);
-    private JSplitPane panel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane0, pane1);
-    private BoxLayout layout = new BoxLayout(panel, BoxLayout.PAGE_AXIS);
+    private final JSplitPane panel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pane0, pane1);
     private final boolean PLATFORM = System.getProperty("os.name").startsWith("Windows");
-
-    private String getEncryptedDecryptedString(String decryptEncrypt) throws InterruptedException {
-        PerformOperation crypt = new PerformOperation();
-        Thread secondThread = new Thread(crypt);
-        crypt.setDecryptEncrypt(decryptEncrypt);
-        secondThread.start();
-        secondThread.join();
-        return crypt.getText();
-    }
 
     public MainGUI() {
         open.addActionListener(new ActionListener() {
@@ -67,7 +54,7 @@ public class MainGUI {
                     selected = new File(dialog.getFilterPath() + getWin32OrLinuxSeperator() + dialog.getFileName());
                     try {
                         Output.setText(decryptWhenChecked(Files.readString(selected.toPath())));
-                    } catch (IOException | InterruptedException ex) {
+                    } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
                 }
@@ -94,12 +81,10 @@ public class MainGUI {
                 }
             }
 
-            public String decryptWhenChecked(String arg) throws InterruptedException {
-                if(decryptWhenOpening.isSelected()){
-                    return getEncryptedDecryptedString(arg);
-                } else {
-                    return arg;
-                }
+            public String decryptWhenChecked(String arg) {
+                if (decryptWhenOpening.isSelected())
+                    return PCSimSave.Decrypt(arg);
+                return arg;
             }
         });
         save.addActionListener(new ActionListener() {
@@ -125,19 +110,16 @@ public class MainGUI {
                         FileWriter writer = new FileWriter(selected);
                         writer.write(encryptWhenChecked(Output.getText()));
                         writer.close();
-                        System.gc();
-                    } catch (IOException | InterruptedException ex) {
+                    } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
                 }
             }
 
-            public String encryptWhenChecked(String arg) throws InterruptedException {
-                if(encryptWhenSaving.isSelected()){
-                    return getEncryptedDecryptedString(arg);
-                } else {
-                    return arg;
-                }
+            public String encryptWhenChecked(String arg) {
+                if (encryptWhenSaving.isSelected())
+                    return PCSimSave.Decrypt(arg);
+                return arg;
             }
 
             private String getWin32OrLinuxSeperator() {
@@ -178,31 +160,15 @@ public class MainGUI {
             }
         });
         Input.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                System.gc();
-            }
             private String removeLastChar(String s) {
                 return (s == null || s.isEmpty())
                         ? null
                         : (s.substring(0, s.length() - 1));
             }
             @Override
-            public void keyReleased(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER){
-                    Input.setText(removeLastChar(Input.getText()));
-                    try {
-                        Output.setText(getEncryptedDecryptedString(Input.getText()));
-                    } catch (InterruptedException ee) {
-                        throw new RuntimeException(ee);
-                    }
-                }
-            }
-        });
-        Output.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                System.gc();
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                    Output.setText(PCSimSave.Decrypt(Input.getText()));
             }
         });
     }
@@ -210,7 +176,7 @@ public class MainGUI {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }catch(Exception ex) {
+        } catch(Exception ex) {
             System.exit(-1);
         }
         MainGUI gui = new MainGUI();
@@ -243,48 +209,12 @@ public class MainGUI {
         gui.helpMenu.add(gui.help);
         gui.help.setMnemonic(KeyEvent.VK_E);
         gui.help.setToolTipText("Opens the help document.");
-        ;
+        gui.Output.setEditable(false);
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setMinimumSize(new Dimension(320,200));
         frame.setSize(new Dimension(640,480));
         frame.setVisible(true);
-    }
-}
-
-class PerformOperation implements Runnable {
-    public String getText() {
-        return text;
-    }
-
-
-    private volatile String decryptEncrypt;
-
-    private volatile String text;
-
-    public boolean isWriteToTxtMode() {
-        return writeToTxtMode;
-    }
-
-    public void setWriteToTxtMode(boolean writeToTxtMode) {
-        this.writeToTxtMode = writeToTxtMode;
-    }
-
-    private volatile boolean writeToTxtMode = false;
-
-    @Override
-    public void run() {
-        System.gc();
-        int key = 0x81;
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < decryptEncrypt.length(); i++) {
-            stringBuilder.append((char) (decryptEncrypt.charAt(i) ^ key));
-        }
-        System.gc();
-        text = stringBuilder.toString();
-    }
-
-    public void setDecryptEncrypt(String decryptEncrypt) {
-        this.decryptEncrypt = decryptEncrypt;
     }
 }
