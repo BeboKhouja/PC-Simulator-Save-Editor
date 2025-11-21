@@ -14,5 +14,5 @@ sourceSets {
 }
 
 dependencies {
-    implementation(files("libs/ChmWeb-0.5.4.jar"))
+
 }
